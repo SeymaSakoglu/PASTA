@@ -32,37 +32,37 @@ def veritabani_olustur():
 	baglanti.close()
 	print("[+] Veritabani hazir.")
 
-	def tarama_kaydet(ip_adresi):
-		baglanti = sqlite3.connect(VERITABANI)
-		cursor = baglanti.cursor()
+def tarama_kaydet(ip_adresi):
+	baglanti = sqlite3.connect(VERITABANI)
+	cursor = baglanti.cursor()
+	
+	tarih = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-		tarih = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-		cursor.execute("""
-			INSERT INTO taramalar (ip_adresi, tarama_tarihi, durum) VALUES (?, ?, ?)
+	cursor.execute("""
+		INSERT INTO taramalar (ip_adresi, tarama_tarihi, durum) VALUES (?, ?, ?)
 		""", (ip_adresi, tarih, "tamamlandi"))
 
-		tarama_id = cursor.lastrowid
-		baglanti.commit()
-		baglanti.close()
-		return tarama_id
+	tarama_id = cursor.lastrowid
+	baglanti.commit()
+	baglanti.close()
+	return tarama_id
 
-	def sonuc_kaydet(tarama_id, port, servis, versiyon, durum):
-		baglanti = sqlite3.connect(VERITABANI)
-		cursor = baglanti.cursor()
+def sonuc_kaydet(tarama_id, port, servis, versiyon, durum):
+	baglanti = sqlite3.connect(VERITABANI)
+	cursor = baglanti.cursor()
 
-		cursor.execute("""
-			INSERT INTO sonuclar (tarama_id ,port, servis, versiyon, durum) VALUES (?, ?, ?, ?)
-		""", (tarama_id, port, servis, versiyon, durum))
+	cursor.execute("""
+		INSERT INTO sonuclar (tarama_id ,port, servis, versiyon, durum) VALUES (?, ?, ?, ?)
+	""", (tarama_id, port, servis, versiyon, durum))
 
-		baglanti.commit()
-		baglanti.close()
+	baglanti.commit()
+	baglanti.close()
 
-	def taramalari_listele():
-		baglanti = sqlite3.connect(VERITABANI)
-		cursor = baglanti.cursor()
+def taramalari_listele():
+	baglanti = sqlite3.connect(VERITABANI)
+	cursor = baglanti.cursor()
 
-		cursor.execute("SELECT * FROM taramalar")
-		kayitlar = cursor.fetchall()
-		baglanti.close()	
-		return kayitlar
+	cursor.execute("SELECT * FROM taramalar")
+	kayitlar = cursor.fetchall()
+	baglanti.close()	
+	return kayitlar
