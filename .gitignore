@@ -1,14 +1,6 @@
-# Sanal ortam
-venv/
-
-# Python cache
+pasta.db
+kanitlar/
 __pycache__/
 *.pyc
-*.pyo
-
-# Veritabanı
-*.db
-
-# OS dosyaları
-.DS_Store
-Thumbs.db
+.env
+/tmp/msfrpcd.pid

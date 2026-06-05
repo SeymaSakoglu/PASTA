@@ -1,3 +1,4 @@
 python-nmap
+pymetasploit3
 colorama
-fpdf2
+pillow

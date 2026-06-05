@@ -1,30 +1,50 @@
-# 🔐 PASTA — Python Automated Security Testing Agent
+# PASTA - Port Tarama ve Zafiyet Analiz Araci
 
-Bitirme projesi kapsamında geliştirilen, **izinli ve kontrollü** 
-ortamlarda zaafiyetli sanal makinelere yönelik port tarama ve 
-sömürme aracı.
+Bitirme projesi kapsaminda gelistirilen bu arac,
+belirlenen IP adreslerindeki acik portlari tespit eder,
+zafiyet analizi yapar ve rapor olusturur.
 
-## ⚠️ Sorumluluk Reddi
-Bu araç yalnızca eğitim amaçlı ve **yasal izin alınmış** 
-sistemlerde kullanılmak üzere geliştirilmiştir.
+## Ozellikler
 
-## 🛠️ Kurulum
-```bash
-git clone https://github.com/KULLANICI_ADIN/PASTA.git
-cd PASTA
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
+- Nmap ile port tarama ve servis/versiyon tespiti
+- NSE script ile zafiyet analizi
+- Metasploit ile otomatik exploit denemesi
+- Shell ciktisi ve VNC ekran goruntusu ile kanit toplama
+- SQLite veritabanina kayit
+- Konsol ve GUI arayuz destegi
 
-## 🚀 Kullanım
-```bash
-python main.py
-```
+## Kurulum
 
-## 📦 Özellikler
-- [ ] Port tarama (Nmap entegrasyonu)
-- [ ] Zafiyet tespiti
-- [ ] Otomatik sömürme denemeleri
-- [ ] PDF/TXT rapor çıktısı
-- [ ] SQLite veritabanı kaydı
+pip3 install -r requirements.txt
+
+Ayrica sistemde nmap ve metasploit-framework kurulu olmali.
+
+## Kullanim
+
+Konsol:
+    python3 main.py
+
+Grafik Arayuz:
+    python3 pasta_gui.py
+
+## Notlar
+
+- Sanal makine ortaminda test edilmistir (Metasploitable 2).
+- Hedef IP main.py icinde HEDEF_IP degiskeniyle ayarlanir.
+- Tum tarama sonuclari pasta.db dosyasina kaydedilir.
+- Kanitlar kanitlar/ klasorune yazilir.
+
+## Proje Yapisi
+
+PASTA/
+├── main.py
+├── pasta_gui.py
+├── scanner.py
+├── msf_manager.py
+├── exploiter.py
+├── screenshot.py
+├── reporter.py
+├── database.py
+├── requirements.txt
+├── .gitignore
+└── README.md

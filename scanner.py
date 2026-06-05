@@ -1,47 +1,52 @@
-#!/usr/bin/env python3
 import nmap
-import colorama
-from colorama import Fore, Style
-from database import tarama_kaydet, sonuc_kaydet
+from database import tarama_ekle, tarama_guncelle, port_ekle, zafiyet_ekle
 
-colorama.init()
+BILINEN_ZAFIYETLER = {
+    21: "vsftpd 2.3.4",
+    445: "Samba 3.0.20",
+    3306: "MySQL 5.0",
+    1524: "Metasploitable"
+}
 
-def port_tara(ip_adresi, port_aralik="1-1024"):
-    print(f"\n{Fore.CYAN}[*] Hedef: {ip_adresi} | Port aralik: {port_aralik}{Style.RESET_ALL}")
-    print(f"{Fore.YELLOW}[*] Tarama basliyor...{Style.RESET_ALL}\n")
-    
+def tara(hedef_ip, portlar="1-1024"):
+    print(f"[*] {hedef_ip} taranıyor...")
     tarayici = nmap.PortScanner()
 
     try:
-        tarayici.scan(
-            hosts=ip_adresi,
-            ports=port_aralik,
-            arguments="-sV"
-        )
+        tarayici.scan(hedef_ip, portlar, "-sV")
     except Exception as e:
-        print(f"{Fore.RED}[-] Tarama hatasi: {e}{Style.RESET_ALL}")
-        return
-    
-    if ip_adresi not in tarayici.all_hosts():
-        print(f"{Fore.RED}[-] Hedefe ulasilamadi.{Style.RESET_ALL}")
-    
-    tarama_id = tarama_kaydet(ip_adresi)
+        print(f"[-] Tarama hatasi: {e}")
+        return None, []
 
-    acik_port_sayisi = 0
+    if hedef_ip not in tarayici.all_hosts():
+        print("[-] Makineye ulasilamadi")
+        return None, []
 
-    for port in tarayici[ip_adresi]["tcp"]:
-        bilgi = tarayici[ip_adresi]["tcp"][port]
+    tid = tarama_ekle(hedef_ip, portlar)
+    zafiyet_portlari = []
+
+    for port in tarayici[hedef_ip].get("tcp", {}):
+        bilgi = tarayici[hedef_ip]["tcp"][port]
         durum = bilgi["state"]
-        servis = bilgi["name"]
-        versiyon = bilgi["version"]
+        servis = bilgi.get("name", "")
+        urun = bilgi.get("product", "")
+        versiyon = bilgi.get("version", "")
+
+        port_ekle(tid, port, servis, urun, versiyon, durum)
 
         if durum == "open":
-            acik_port_sayisi += 1
-            print(f"{Fore.GREEN}[+] Port {port}/tcp ACIK | {servis} {versiyon}{Style.RESET_ALL}")
-        else:
-            print(f"{Fore.RED}[-] Port {port}/tcp KAPALI{Style.RESET_ALL}")
+            print(f"  [ACIK] {port}/tcp - {servis} {urun} {versiyon}")
 
-        sonuc_kaydet(tarama_id, port, servis, versiyon, durum)
-    
-    print(f"\n{Fore.CYAN}[*] Tarama tamamlandi. {acik_port_sayisi} acik port bulundu.{Style.RESET_ALL}")
-    print(f"\n{Fore.CYAN}[*] Sonuclar veritabanina kaydedildi. (Tarama ID: {tarama_id}){Style.RESET_ALL}\n")
+            if port in BILINEN_ZAFIYETLER:
+                beklenen = BILINEN_ZAFIYETLER[port]
+                tam = f"{urun} {versiyon}"
+                if beklenen.lower() in tam.lower():
+                    print(f"  [!!!] ZAFIYET BULUNDU: port {port} - {beklenen}")
+                    zafiyet_ekle(tid, port, "versiyon", f"Zafiyetli: {tam}")
+                    zafiyet_portlari.append(port)
+        else:
+            print(f"  [KAPALI] {port}/tcp")
+
+    tarama_guncelle(tid, "tamamlandi")
+    print(f"[+] Tarama bitti. Zafiyet portlari: {zafiyet_portlari}")
+    return tid, zafiyet_portlari
