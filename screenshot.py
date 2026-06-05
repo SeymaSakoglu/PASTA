@@ -25,6 +25,7 @@ def kanit_topla(msf, hedef_ip, session_id):
     print(f"[*] Komutlar calistiriliyor (session {session_id})...")
 
     id_cikti       = komut_calistir(oturum, "id")
+    whoami_cikti   = komut_calistir(oturum, "whoami")
     hostname_cikti = komut_calistir(oturum, "hostname")
     uname_cikti    = komut_calistir(oturum, "uname -a")
     ifconfig_cikti = komut_calistir(oturum, "ifconfig")
@@ -33,6 +34,7 @@ def kanit_topla(msf, hedef_ip, session_id):
         f.write(f"Hedef: {hedef_ip}\n")
         f.write(f"Session: {session_id}\n\n")
         f.write("--- id ---\n" + id_cikti + "\n")
+        f.write("--- whoami ---\n" + whoami_cikti + "\n")
         f.write("--- hostname ---\n" + hostname_cikti + "\n")
         f.write("--- uname -a ---\n" + uname_cikti + "\n")
         f.write("--- ifconfig ---\n" + ifconfig_cikti + "\n")
