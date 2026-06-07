@@ -92,5 +92,17 @@ PASTA/
 
 ***
 
+## Uygulama Ekran Görüntüleri
+
+![Ana Ekran](app_screenshot/app%20(1).png)
+![Exploit Onay](app_screenshot/app%20(2).png)
+![Exploit Tamamlandı](app_screenshot/app%20(3).png)
+![Özel Tarama](app_screenshot/app%20(4).png)
+![Geçmiş Taramalar](app_screenshot/app%20(5).png)
+![Tarama Detayı](app_screenshot/app%20(6).png)
+![Kanıt Dosyaları](app_screenshot/app%20(7).png)
+
+***
+
 **Geliştirici:** Şeyma SAKOĞLU — Bilgisayar Programcılığı, İstinye Üniversitesi
 **Danışman:** Öğr. Gör. Neda Dadashkhani | Haziran 2026
