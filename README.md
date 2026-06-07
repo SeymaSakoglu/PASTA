@@ -1,50 +1,96 @@
-# PASTA - Port Tarama ve Zafiyet Analiz Araci
+# PASTA — Port Tarama ve Zafiyet Analiz Aracı
 
-Bitirme projesi kapsaminda gelistirilen bu arac,
-belirlenen IP adreslerindeki acik portlari tespit eder,
-zafiyet analizi yapar ve rapor olusturur.
+Python ile geliştirilmiş bu araç; belirlenen IP adresindeki açık portları tespit eder, çalışan servislerin sürüm bilgilerini analiz eder, zafiyetli portları işaretler ve Metasploit üzerinden exploit denemesi yaparak sonuçları raporlar. Yalnızca eğitim amaçlı, izinli ve kontrollü sanal makine ortamında kullanılmak üzere geliştirilmiştir. Yetkisiz sistemlere karşı kullanılması yasaktır.
 
-## Ozellikler
+***
 
-- Nmap ile port tarama ve servis/versiyon tespiti
-- NSE script ile zafiyet analizi
-- Metasploit ile otomatik exploit denemesi
-- Shell ciktisi ve VNC ekran goruntusu ile kanit toplama
-- SQLite veritabanina kayit
-- Konsol ve GUI arayuz destegi
+## Özellikler
+
+- Nmap ile açık port tarama ve servis/sürüm tespiti
+- Zafiyetli servis-sürüm eşleşmelerinin otomatik olarak işaretlenmesi
+- Metasploit RPC üzerinden kullanıcı onaylı exploit denemesi
+- Başarılı oturumlardan kanıt toplama (id, whoami, hostname, uname, ifconfig çıktıları)
+- Tüm tarama sonuçlarının SQLite veritabanına kaydedilmesi ve geçmişe dönük görüntüleme
+- Hem konsol hem de Tkinter grafik arayüz (GUI) desteği
+
+***
 
 ## Kurulum
 
+Önce Python paketlerini yükle:
+
+```bash
 pip3 install -r requirements.txt
+```
 
-Ayrica sistemde nmap ve metasploit-framework kurulu olmali.
+Ardından sistemde Nmap ve Metasploit kurulu olmalı. Kali Linux kullanıyorsan genellikle ikisi de yüklü gelir. Değilse:
 
-## Kullanim
+```bash
+sudo apt install nmap metasploit-framework -y
+```
 
-Konsol:
-    python3 main.py
+GUI açıldığında Metasploit RPC servisi otomatik başlatılmaya çalışılır. Manuel başlatmak istersen:
 
-Grafik Arayuz:
-    python3 pasta_gui.py
+```bash
+msfrpcd -P sifreniz -S -a 127.0.0.1
+```
+
+***
+
+## Kullanım
+
+İki farklı modda çalıştırılabilir:
+
+**Konsol modu** — terminalde adım adım işlem yapar:
+```bash
+python3 main.py
+```
+
+**Grafik arayüz (GUI)** — menülü pencere arayüzü açılır:
+```bash
+python3 pasta_gui.py
+```
+
+GUI açıldığında karşına 5 seçenek çıkar:
+
+```
+[1] Metasploitable 2 Tara   →  Ön tanımlı hedefte otomatik tarama + exploit
+[2] Özel Tara               →  Kendi IP ve port listeni girerek tarama yap
+[3] Raporları Göster        →  Geçmiş taramaları listele ve detay gör
+[4] Kanıt Dosyaları         →  Başarılı exploit sonrası elde edilen çıktıları gör
+[5] Çıkış                   →  Uygulamayı kapat
+```
+
+***
 
 ## Notlar
 
-- Sanal makine ortaminda test edilmistir (Metasploitable 2).
-- Hedef IP main.py icinde HEDEF_IP degiskeniyle ayarlanir.
-- Tum tarama sonuclari pasta.db dosyasina kaydedilir.
-- Kanitlar kanitlar/ klasorune yazilir.
+- Proje yalnızca Metasploitable 2 sanal makinesi üzerinde test edilmiştir
+- Hedef IP adresini `main.py` içindeki `HEDEF_IP` değişkeninden değiştirebilirsin
+- Tüm tarama sonuçları proje klasöründeki `pasta.db` dosyasına kaydedilir
+- Exploit sonrası kanıt dosyaları `kanitlar/` klasörüne otomatik olarak yazılır
+- Gerçek bir sisteme karşı çalıştırılması etik ve yasal açıdan kabul edilemez
 
-## Proje Yapisi
+***
 
+## Proje Yapısı
+
+```
 PASTA/
-├── main.py
-├── pasta_gui.py
-├── scanner.py
-├── msf_manager.py
-├── exploiter.py
-├── screenshot.py
-├── reporter.py
-├── database.py
-├── requirements.txt
-├── .gitignore
+├── main.py               # Konsol tabanlı başlatıcı, ana akışı yönetir
+├── pasta_gui.py          # Tkinter grafik arayüzü
+├── scanner.py            # Nmap tarama ve servis/sürüm ayrıştırma
+├── msf_manager.py        # Metasploit RPC bağlantı yönetimi
+├── exploiter.py          # Exploit denemesi ve oturum kontrolü
+├── screenshot.py         # Kanıt toplama (komut çıktısı + ekran görüntüsü)
+├── reporter.py           # Raporlama yardımcı modülü
+├── database.py           # SQLite veritabanı işlemleri
+├── requirements.txt      # Gerekli Python paketleri
+├── .gitignore            # Git tarafından yok sayılacak dosyalar
 └── README.md
+```
+
+***
+
+**Geliştirici:** Şeyma SAKOĞLU — Bilgisayar Programcılığı, İstinye Üniversitesi
+**Danışman:** Öğr. Gör. Neda Dadashkhani | Haziran 2026
